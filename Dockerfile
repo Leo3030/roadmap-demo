@@ -16,6 +16,8 @@ COPY package.json package-lock.json* ./
 
 COPY . .
 
-RUN npm run build
+RUN pnpm install
 
-CMD ["npm", "run", "docker-start"]
+RUN pnpm run build
+
+CMD ["pnpm", "run", "docker-start"]

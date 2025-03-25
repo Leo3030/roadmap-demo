@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "492f608cb89799f90eaa040fdee821d5"
-application_url = "https://documented-scenarios-python-northern.trycloudflare.com"
+application_url = "https://shopify-roadmap-app.onrender.com"
 embedded = true
 name = "roadmap-space"
 handle = "roadmap-space-1"
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://documented-scenarios-python-northern.trycloudflare.com/auth/callback",
-  "https://documented-scenarios-python-northern.trycloudflare.com/auth/shopify/callback",
-  "https://documented-scenarios-python-northern.trycloudflare.com/api/auth/callback"
+  "https://shopify-roadmap-app.onrender.com/auth/callback",
+  "https://shopify-roadmap-app.onrender.com/auth/shopify/callback",
+  "https://shopify-roadmap-app.onrender.com/api/auth/callback"
 ]
 
 [pos]

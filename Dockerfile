@@ -16,10 +16,10 @@ COPY package.json package-lock.json* ./
 
 COPY . .
 
-RUN npm install -g @shopify/cli @shopify/app
+RUN npm install -g pnpm @shopify/cli @shopify/app
 
-RUN npm install
+RUN pnpm install
 
-RUN npm run build
+RUN pnpm run build
 
 CMD ["pnpm", "run", "docker-start"]

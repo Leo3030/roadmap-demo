@@ -15,11 +15,11 @@ import { json } from "@remix-run/node";
 import { useSubmit, useLoaderData, useActionData } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 
-// 加载环境变量中的roadmap ID，如果有的话
+// Load Roadmap ID from environment variables if available
 export const loader = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   
-  // 尝试从metafield中获取已保存的roadmap ID
+  // Try to get saved roadmap ID from metafield
   let roadmapId = "";
   let iframeUrl = "https://cdn.roadmap-dev.space/widget/roadmap.js";
   
@@ -45,12 +45,12 @@ export const loader = async ({ request }) => {
     console.error("Error loading metafield:", error);
   }
   
-  // 如果metafield中没有找到，则尝试使用环境变量中的默认值
+  // If not found in metafield, try using default value from environment variables
   if (!roadmapId && process.env.ROADMAP_ID) {
     roadmapId = process.env.ROADMAP_ID;
   }
   
-  // 如果环境变量也没有，则使用默认值
+  // If environment variable is also not available, use default value
   if (!roadmapId) {
     roadmapId = "676937a32efc0b9e53a85a40";
   }
@@ -59,7 +59,7 @@ export const loader = async ({ request }) => {
   return json({ roadmapId, iframeUrl });
 };
 
-// 保存roadmap ID到metafield
+// Save roadmap ID to metafield
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
   const formData = await request.formData();
@@ -67,7 +67,7 @@ export const action = async ({ request }) => {
   const iframeUrl = formData.get("iframeUrl");
   
   try {
-    // 首先获取商店ID
+    // First get the shop ID
     const shopResponse = await admin.graphql(`
       query {
         shop {
@@ -79,7 +79,7 @@ export const action = async ({ request }) => {
     const shopData = await shopResponse.json();
     const shopId = shopData.data.shop.id;
     
-    // 创建或更新metafield
+    // Create or update metafield
     const response = await admin.graphql(`
       mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
         metafieldsSet(metafields: $metafields) {
@@ -121,10 +121,10 @@ export const action = async ({ request }) => {
       });
     }
     
-    return json({ status: "success", message: "设置已成功保存" });
+    return json({ status: "success", message: "Settings have been saved successfully" });
   } catch (error) {
-    console.error("保存 metafield 时出错:", error);
-    return json({ status: "error", message: "保存设置时出错: " + error.message });
+    console.error("Error saving metafield:", error);
+    return json({ status: "error", message: "Error saving settings: " + error.message });
   }
 };
 
@@ -140,7 +140,7 @@ export default function Index() {
   
   const submit = useSubmit();
   
-  // 当action返回结果时显示toast通知
+  // Display toast notification when action returns a result
   useEffect(() => {
     if (actionData?.status) {
       setToastMessage(actionData.message);
@@ -149,10 +149,10 @@ export default function Index() {
     }
   }, [actionData]);
   
-  // 验证Roadmap ID是否有效
+  // Validate if Roadmap ID is valid
   const validateRoadmapId = useCallback(async (id) => {
     if (!id) {
-      setToastMessage("请输入Roadmap ID");
+      setToastMessage("Please enter a Roadmap ID");
       setToastError(true);
       setToastActive(true);
       return false;
@@ -160,7 +160,7 @@ export default function Index() {
 
     setIsValidating(true);
     
-    // 根据iframeUrl选择正确的API环境
+    // Choose the correct API environment based on iframeUrl
     const isProd = iframeUrl === "https://cdn.roadmap.space/widget/roadmap.js";
     const apiBaseUrl = isProd 
       ? "https://app.roadmap.space" 
@@ -177,25 +177,25 @@ export default function Index() {
       if (response.ok) {
         return true;
       } else {
-        // 尝试获取错误信息
-        let errorMessage = "无效的Roadmap ID";
+        // Try to get error message
+        let errorMessage = "Invalid Roadmap ID";
         try {
           const errorData = await response.json();
           if (errorData && errorData.message) {
             errorMessage = errorData.message;
           }
         } catch (e) {
-          // 无法解析错误JSON，使用默认消息
+          // Unable to parse error JSON, use default message
         }
         
-        setToastMessage(`验证失败: ${errorMessage}`);
+        setToastMessage(`Validation failed: ${errorMessage}`);
         setToastError(true);
         setToastActive(true);
         return false;
       }
     } catch (error) {
-      console.error("验证Roadmap ID时出错:", error);
-      setToastMessage("验证Roadmap ID时出错: " + (error.message || "网络错误"));
+      console.error("Error validating Roadmap ID:", error);
+      setToastMessage("Error validating Roadmap ID: " + (error.message || "Network error"));
       setToastError(true);
       setToastActive(true);
       return false;
@@ -205,10 +205,10 @@ export default function Index() {
   }, [iframeUrl]);
   
   const handleSubmit = useCallback(async () => {
-    // 先验证Roadmap ID
+    // First validate Roadmap ID
     const isValid = await validateRoadmapId(roadmapId);
     
-    // 如果验证通过，才提交表单
+    // Only submit the form if validation passes
     if (isValid) {
       submit(
         { roadmapId, iframeUrl },
@@ -227,7 +227,7 @@ export default function Index() {
             <Card>
               <BlockStack gap="500">
                 <Text as="p" variant="bodyMd">
-                  请输入您的 Roadmap Space ID 和 iframe URL，它们将被保存到商店的 metafield 中，以便在主题中使用。
+                  Enter your Roadmap Space ID and iframe URL. These will be saved to your store's metafield for use in your theme.
                 </Text>
                 <FormLayout>
                   <TextField
@@ -235,7 +235,7 @@ export default function Index() {
                     value={roadmapId}
                     onChange={setRoadmapId}
                     autoComplete="off"
-                    helpText="在 Roadmap Space 中创建公共路线图后，可以找到此 ID"
+                    helpText="You can find this ID after creating a public roadmap in Roadmap Space"
                     error={toastError && toastActive ? toastMessage : undefined}
                   />
                   <TextField
@@ -243,7 +243,7 @@ export default function Index() {
                     value={iframeUrl}
                     onChange={setIframeUrl}
                     autoComplete="off"
-                    helpText="用于加载 Roadmap 小部件的 URL"
+                    helpText="URL for loading the Roadmap widget"
                   />
                   <Button 
                     primary 
@@ -251,7 +251,7 @@ export default function Index() {
                     loading={isValidating}
                     disabled={isValidating}
                   >
-                    {isValidating ? "验证中..." : "保存"}
+                    {isValidating ? "Validating..." : "Save"}
                   </Button>
                 </FormLayout>
               </BlockStack>

@@ -24,75 +24,75 @@
   {% assign roadmap_id_source = "Block Settings" %}
 {% endif %}
 
-<!-- 如果客户已登录，获取客户信息 -->
+<!-- Get customer information if logged in -->
 {% if customer %}
   {% assign email = customer.email | default: "" %}
   {% assign first_name = customer.first_name | default: "" %}
   {% assign last_name = customer.last_name | default: "" %}
 {% endif %}
 
-{% comment %} <!-- 调试信息切换按钮 -->
+{% comment %} <!-- Debug information toggle button -->
 <button id="toggle-debug" style="background-color: #f5f5f5; border: 1px solid #ddd; padding: 5px 10px; margin-bottom: 5px; cursor: pointer; font-size: 12px;">
-  显示调试信息
+  Show Debug Info
 </button>
 
-<!-- 调试信息 -->
+<!-- Debug information -->
 <div id="debug-info" style="display: none; background-color: #f5f5f5; padding: 10px; margin: 10px 0; border: 1px solid #ddd; font-family: monospace; white-space: pre-wrap;">
-  <h3>调试信息</h3>
-  <p><strong>所有元数据:</strong> {{ shop.metafields | json }}</p>
-  <p><strong>Roadmap 元数据:</strong> {{ shop.metafields.roadmap | json }}</p>
+  <h3>Debug Information</h3>
+  <p><strong>All Metafields:</strong> {{ shop.metafields | json }}</p>
+  <p><strong>Roadmap Metafields:</strong> {{ shop.metafields.roadmap | json }}</p>
   <p><strong>Roadmap Settings:</strong> {{ shop.metafields.roadmap.settings | json }}</p>
   <p><strong>Roadmap Settings value:</strong> {{ shop.metafields.roadmap.settings.value | json }}</p>
   <p><strong>Roadmap Settings value roadmapId:</strong> {{ shop.metafields.roadmap.settings.value.roadmapId | json }}</p>
   <p><strong>Roadmap Settings value iframeUrl:</strong> {{ shop.metafields.roadmap.settings.value.iframeUrl | json }}</p>
-  <p><strong>当前使用的 Roadmap ID:</strong> {{ roadmap_id }}</p>
-  <p><strong>Roadmap ID 来源:</strong> <span style="color: blue; font-weight: bold;">{{ roadmap_id_source }}</span></p>
-  <p><strong>当前使用的 iframe URL:</strong> {{ iframe_url }}</p>
+  <p><strong>Current Roadmap ID:</strong> {{ roadmap_id }}</p>
+  <p><strong>Roadmap ID Source:</strong> <span style="color: blue; font-weight: bold;">{{ roadmap_id_source }}</span></p>
+  <p><strong>Current iframe URL:</strong> {{ iframe_url }}</p>
   <p><strong>Email:</strong> {{ email }}</p>
   <p><strong>First Name:</strong> {{ first_name }}</p>
   <p><strong>Last Name:</strong> {{ last_name }}</p>
-  <p><strong>客户信息:</strong> {{ customer | json }}</p>
+  <p><strong>Customer Info:</strong> {{ customer | json }}</p>
 </div> {% endcomment %}
 
 {% comment %} <script>
-  // 调试信息切换功能
+  // Debug information toggle functionality
   document.getElementById('toggle-debug').addEventListener('click', function() {
     var debugInfo = document.getElementById('debug-info');
     var toggleBtn = document.getElementById('toggle-debug');
     if (debugInfo.style.display === 'none') {
       debugInfo.style.display = 'block';
-      toggleBtn.textContent = '隐藏调试信息';
+      toggleBtn.textContent = 'Hide Debug Info';
     } else {
       debugInfo.style.display = 'none';
-      toggleBtn.textContent = '显示调试信息';
+      toggleBtn.textContent = 'Show Debug Info';
     }
   });
 </script>
 
-<!-- Roadmap ID 来源信息 -->
+<!-- Roadmap ID source information -->
 <div style="background-color: #e8f4ff; padding: 8px 12px; margin-bottom: 10px; border-left: 4px solid #2e72d2; font-size: 14px;">
   <p style="margin: 0; padding: 0;">
     <strong>Roadmap ID:</strong> {{ roadmap_id }}
     <span style="background-color: #2e72d2; color: white; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-size: 12px;">{{ roadmap_id_source }}</span>
   </p>
   <p style="margin: 5px 0 0 0; padding: 0; font-size: 12px; color: #666;">
-    <strong>使用的 iframe URL:</strong> {{ iframe_url }}
+    <strong>Using iframe URL:</strong> {{ iframe_url }}
   </p>
 </div> {% endcomment %}
 
-<!-- 先创建容器 -->
+<!-- Create container first -->
 <div id="roadmap-container" style="width: 100%; height: 600px;"></div>
 
-<!-- 确保脚本正确加载和执行 -->
+<!-- Ensure script loads and executes correctly -->
 <script>
-  // 定义可用的CDN URLs
+  // Define available CDN URLs
   var ROADMAP_PROD_URL = 'https://cdn.roadmap.space/widget/roadmap.js';
   var ROADMAP_DEV_URL = 'https://cdn.roadmap-dev.space/widget/roadmap.js';
   
-  // 从metafield获取的iframe URL
+  // iframe URL from metafield
   var IFRAME_URL = '{{ iframe_url }}';
   
-  // 创建脚本标签并设置属性
+  // Create script tag and set attributes
   function loadRoadmapScript(url, isRetry) {
     console.log('Attempting to load Roadmap script from: ' + url);
     console.log('Roadmap ID: {{ roadmap_id }} (Source: {{ roadmap_id_source }})');
@@ -110,22 +110,22 @@
     script.setAttribute('data-company', 'company');
     script.setAttribute('data-revenue', '123');
     
-    // 监听脚本加载完成事件
+    // Listen for script load complete event
     script.onload = function() {
       console.log('Roadmap script loaded successfully from: ' + url);
-      // 如果需要在脚本加载后执行额外代码，可以在这里添加
+      // If you need to execute additional code after the script loads, add it here
     };
     
-    // 监听脚本加载错误
+    // Listen for script load error
     script.onerror = function() {
       console.error('Failed to load Roadmap script from: ' + url);
       
-      // 如果自定义URL失败且尚未重试，则尝试开发环境URL
+      // If custom URL fails and not yet retried, try dev environment URL
       if (url === IFRAME_URL && !isRetry && url !== ROADMAP_DEV_URL) {
         console.log('Custom URL failed, trying dev URL as fallback...');
         loadRoadmapScript(ROADMAP_DEV_URL, true);
       }
-      // 如果开发环境URL失败且尚未重试，则尝试生产环境URL
+      // If dev environment URL fails and not yet retried, try production environment URL
       else if (url === ROADMAP_DEV_URL && !isRetry) {
         console.log('Trying production URL as fallback...');
         loadRoadmapScript(ROADMAP_PROD_URL, true);
@@ -133,30 +133,30 @@
         console.log('Production URL failed, trying custom URL one more time...');
         loadRoadmapScript(IFRAME_URL, true);
       } else {
-        // 所有URL都失败了，显示错误消息
+        // All URLs failed, display error message
         document.getElementById('roadmap-container').innerHTML = 
           '<div style="text-align: center; padding: 20px; color: #d00;">' +
-          '<p>很抱歉，无法加载Roadmap组件。</p>' +
+          '<p>Sorry, unable to load Roadmap component.</p>' +
           '<p>Roadmap ID: {{ roadmap_id }} (Source: {{ roadmap_id_source }})</p>' +
-          '<p>尝试URL: ' + url + '</p>' +
-          '<p>请稍后再试或联系支持团队。</p>' +
+          '<p>Attempted URL: ' + url + '</p>' +
+          '<p>Please try again later or contact support.</p>' +
           '</div>';
       }
     };
     
-    // 将脚本添加到文档
+    // Add script to document
     document.body.appendChild(script);
   }
   
-  // 页面加载完成后执行
+  // Execute when page loads
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     setTimeout(function() {
-      // 使用从metafield获取的iframe URL
+      // Use iframe URL from metafield
       loadRoadmapScript(IFRAME_URL, false);
     }, 1);
   } else {
     document.addEventListener('DOMContentLoaded', function() {
-      // 使用从metafield获取的iframe URL
+      // Use iframe URL from metafield
       loadRoadmapScript(IFRAME_URL, false);
     });
   }

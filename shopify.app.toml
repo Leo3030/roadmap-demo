@@ -1,10 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "dc4cff22e603d575c403207f30dcf0ae"
-application_url = "https://varied-seventh-measure-lawrence.trycloudflare.com"
+client_id = "492f608cb89799f90eaa040fdee821d5"
+application_url = "https://thanks-agreements-follow-relatives.trycloudflare.com"
 embedded = true
 name = "roadmap-space"
-handle = "roadmap-space"
+handle = "roadmap-space-1"
 
 [build]
 include_config_on_deploy = true
@@ -27,9 +27,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://varied-seventh-measure-lawrence.trycloudflare.com/auth/callback",
-  "https://varied-seventh-measure-lawrence.trycloudflare.com/auth/shopify/callback",
-  "https://varied-seventh-measure-lawrence.trycloudflare.com/api/auth/callback"
+  "https://thanks-agreements-follow-relatives.trycloudflare.com/auth/callback",
+  "https://thanks-agreements-follow-relatives.trycloudflare.com/auth/shopify/callback",
+  "https://thanks-agreements-follow-relatives.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

@@ -37,7 +37,7 @@ jobs:
       - name: Deploy
         env:
           # Token from the Partner Dashboard
-          SHOPIFY_CLI_PARTNERS_TOKEN: atkn_e41968d1ebe2b09381c2f975b4899460b941e5f3c895093414d0f0918558c773
+          SHOPIFY_CLI_PARTNERS_TOKEN: atkn_0e40dd07604cdcbd2b8824145dc7811e5214756cf443301fad6ac4437517e58d
           COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
           # .env content after a deploy
           SHOPIFY_API_KEY: 492f608cb89799f90eaa040fdee821d5

@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "492f608cb89799f90eaa040fdee821d5"
+client_id = "dc4cff22e603d575c403207f30dcf0ae"
 application_url = "https://thanks-agreements-follow-relatives.trycloudflare.com"
 embedded = true
 name = "roadmap-space"
